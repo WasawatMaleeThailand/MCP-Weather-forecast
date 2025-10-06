@@ -1,5 +1,19 @@
-curl -s -X POST http://localhost:8017/mcp \
-  -H 'Content-Type: application/json' \
-  -d '[{"type":"initialize","id":"1","protocolVersion":"2024-11-07"},
-       {"type":"listTools","id":"2"},
-       {"type":"callTool","id":"3","name":"get_forecast","arguments":{"city":"Bangkok","days":3}}]' | jq .
+services:
+  server:
+    build: ./server
+    image: mcp-weather-server:latest
+    ports:
+      - "8017:8017"
+    restart: unless-stopped
+
+  bridge:
+    build: ./bridge
+    image: mcp-weather-bridge:latest
+    ports:
+      - "8080:8080"
+    environment:
+      MCP_UPSTREAM_URL: "http://server:8017/mcp"
+      # API_KEY: "set-a-strong-key"   # (ถ้าต้องการ)
+    depends_on:
+      - server
+    restart: unless-stopped
