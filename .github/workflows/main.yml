@@ -1,0 +1,5 @@
+curl -s -X POST http://localhost:8017/mcp \
+  -H 'Content-Type: application/json' \
+  -d '[{"type":"initialize","id":"1","protocolVersion":"2024-11-07"},
+       {"type":"listTools","id":"2"},
+       {"type":"callTool","id":"3","name":"get_forecast","arguments":{"city":"Bangkok","days":3}}]' | jq .
